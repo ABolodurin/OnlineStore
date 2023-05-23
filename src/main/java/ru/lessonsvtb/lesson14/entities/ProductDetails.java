@@ -1,7 +1,10 @@
 package ru.lessonsvtb.lesson14.entities;
 
+import lombok.*;
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "product_details")
 public class ProductDetails {
@@ -23,30 +26,6 @@ public class ProductDetails {
     }
 
     public ProductDetails() {
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
-
-    public Long getViews() {
-        return views;
-    }
-
-    public void setViews(Long views) {
-        this.views = views;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
     }
 
 }

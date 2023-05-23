@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.lessonsvtb.lesson14.entities.ProductDetails;
 import ru.lessonsvtb.lesson14.repositories.ProductDetailsRepository;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductDetailsService {
@@ -16,7 +17,7 @@ public class ProductDetailsService {
         this.productDetailsRepository = productDetailsRepository;
     }
 
-    public void logView(Long id){
+    public void countView(Long id){
         productDetailsRepository.incrementView(id);
     }
 
@@ -25,12 +26,10 @@ public class ProductDetailsService {
         productDetailsRepository.save(productDetails);
     }
 
-    public ProductDetails getById(Long id){
-        return productDetailsRepository.findById(id).get();
-    }
-
-    public List<ProductDetails> getMostViewed(int limit){
-        return productDetailsRepository.findMostViewed( limit);
+    public List<ProductDetails> findMostViewed(int limit){
+        return productDetailsRepository.findByOrderByViewsDesc().stream()
+                .limit(limit)
+                .collect(Collectors.toList());
     }
 
 }

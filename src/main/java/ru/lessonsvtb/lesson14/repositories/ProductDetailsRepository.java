@@ -7,7 +7,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lessonsvtb.lesson14.entities.ProductDetails;
-
 import java.util.List;
 
 @Repository
@@ -17,7 +16,6 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
     @Query(value = "UPDATE ProductDetails pd SET pd.views = pd.views + 1 WHERE pd.productId =:id")
     void incrementView(@Param("id") Long id);
 
-    @Query(value = "SELECT * FROM product_details ORDER BY views DESC LIMIT :limit ", nativeQuery = true)
-    List<ProductDetails> findMostViewed(@Param("limit") int limit);
+    List<ProductDetails> findByOrderByViewsDesc();
 
 }

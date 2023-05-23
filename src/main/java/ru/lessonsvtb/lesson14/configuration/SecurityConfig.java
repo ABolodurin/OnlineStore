@@ -16,6 +16,7 @@ import ru.lessonsvtb.lesson14.services.UserService;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
+    private static final String roleAdmin = "ADMIN";
 
     @Autowired
     public void setUserService(UserService userService) {
@@ -38,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/products/show/*").hasRole("ADMIN")
-                .antMatchers("/products/init").hasRole("ADMIN")
+                .antMatchers("/products/show/*").hasRole(roleAdmin)
+                .antMatchers("/products/init").hasRole(roleAdmin)
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()

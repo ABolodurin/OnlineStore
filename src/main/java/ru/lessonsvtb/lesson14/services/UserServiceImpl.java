@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByName(username);
         if (user == null) throw new UsernameNotFoundException("Invalid username");
-        return new org.springframework.security.core.userdetails.User(user.getUserName(),
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(), mapUserAuthorities(user.getAuthorities()));
     }
 

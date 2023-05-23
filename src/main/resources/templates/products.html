@@ -14,7 +14,7 @@
     <div sec:authorize="isAuthenticated()">Hello,
         <div sec:authentication="principal.username"></div>
         <div style="color: darkred" sec:authorize="hasRole('ADMIN')"> ADMIN</div>
-        <div sec:authorize="hasRole('ADMIN')">Для корректной работы логгирования просмотров необходимо обновить продукты,
+        <div sec:authorize="hasRole('ADMIN')">Для корректной работы счётчика просмотров необходимо обновить продукты,
             которые были добавлены вручную через БД!
             <a th:href="@{/products/init}">Обновить продукты</a>
         </div>

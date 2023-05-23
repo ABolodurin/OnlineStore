@@ -1,8 +1,11 @@
 package ru.lessonsvtb.lesson14.entities;
 
+import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "authorities")
 public class Authority {
@@ -25,26 +28,6 @@ public class Authority {
     }
 
     public Authority() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getAuthority() {
-        return authority;
-    }
-
-    public void setAuthority(String authority) {
-        this.authority = authority;
-    }
-
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
     }
 
 }

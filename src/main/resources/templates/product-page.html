@@ -34,12 +34,12 @@
     </div>
 </form>
 
-<form th:action="@{'/products/show/' + ${product.id} + '/remove'}"
+<form th:action="@{'/products/show/' + ${product.id} + '/delete'}"
       th:object="${product}" method="post" class="form-horizontal">
 
     <div style="margin-top: 10px" class="form-group">
         <div class="col-sm-6 controls">
-            <button type="submit" class="btn btn-primary">Remove</button>
+            <button type="submit" class="btn btn-primary">Delete product</button>
         </div>
     </div>
 </form>
