@@ -5,6 +5,8 @@ import javax.persistence.*;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "product_details")
 public class ProductDetails {
@@ -15,17 +17,8 @@ public class ProductDetails {
     @Column(name = "views")
     private Long views;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @MapsId
     private Product product;
-
-    public ProductDetails(Long productId, Long views, Product product) {
-        this.productId = productId;
-        this.views = views;
-        this.product = product;
-    }
-
-    public ProductDetails() {
-    }
 
 }

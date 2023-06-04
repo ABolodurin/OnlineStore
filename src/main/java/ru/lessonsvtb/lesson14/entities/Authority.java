@@ -6,6 +6,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "authorities")
 public class Authority {
@@ -25,9 +26,6 @@ public class Authority {
     public Authority(String authority, List<User> userList) {
         this.authority = authority;
         this.userList = userList;
-    }
-
-    public Authority() {
     }
 
 }

@@ -5,6 +5,8 @@ import javax.persistence.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "products")
 public class Product {
@@ -20,9 +22,6 @@ public class Product {
     @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private ProductDetails productDetails;
-
-    public Product() {
-    }
 
     public Product(Long id, String title, int price) {
         this.id = id;

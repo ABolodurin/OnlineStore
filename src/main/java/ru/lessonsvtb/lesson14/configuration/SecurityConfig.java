@@ -1,5 +1,6 @@
 package ru.lessonsvtb.lesson14.configuration;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,14 +15,10 @@ import ru.lessonsvtb.lesson14.services.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserService userService;
-    private static final String roleAdmin = "ADMIN";
-
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
+    private static final String ROLE_ADMIN = "ADMIN";
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
@@ -39,11 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeRequests()
-                .antMatchers("/products/show/*").hasRole(roleAdmin)
-                .antMatchers("/products/init").hasRole(roleAdmin)
+                .antMatchers("/products/show/*").hasRole(ROLE_ADMIN)
+                .antMatchers("/products/init").hasRole(ROLE_ADMIN)
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
                 .permitAll();
     }
+
 }

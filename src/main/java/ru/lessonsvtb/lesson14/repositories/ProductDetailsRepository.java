@@ -16,6 +16,6 @@ public interface ProductDetailsRepository extends JpaRepository<ProductDetails, 
     @Query(value = "UPDATE ProductDetails pd SET pd.views = pd.views + 1 WHERE pd.productId =:id")
     void incrementView(@Param("id") Long id);
 
-    List<ProductDetails> findByOrderByViewsDesc();
+    List<ProductDetails> findTop3ByOrderByViewsDesc();
 
 }

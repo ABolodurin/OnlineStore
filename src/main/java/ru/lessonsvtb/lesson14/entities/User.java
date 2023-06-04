@@ -6,6 +6,8 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -21,14 +23,5 @@ public class User {
     joinColumns = @JoinColumn(name = "username"),
     inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private List<Authority> authorities;
-
-    public User(String username, String password, List<Authority> authorities) {
-        this.username = username;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
-    public User() {
-    }
 
 }

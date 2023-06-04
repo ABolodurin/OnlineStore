@@ -1,5 +1,6 @@
 package ru.lessonsvtb.lesson14.services;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,13 +15,9 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
-
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     @Transactional
@@ -32,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByName(username);
-        if (user == null) throw new UsernameNotFoundException("Invalid username");
+        if (user == null) throw new UsernameNotFoundException("username not found" + username);
         return new org.springframework.security.core.userdetails.User(user.getUsername(),
                 user.getPassword(), mapUserAuthorities(user.getAuthorities()));
     }
