@@ -32,10 +32,9 @@ public class ProductService {
 
     public Page<ProductDTO> productPage(Pageable pageable,
                                         String titleContains, Integer minPrice, Integer maxPrice) {
-        List<ProductDTO> productList = productRepository
-                .findAll(this.getSpecFrom(titleContains, minPrice, maxPrice)).stream()
-                .map(productDTOMapper).collect(Collectors.toList());
-        return new PageImpl<>(productList, pageable, productList.size());
+        return productRepository
+                .findAll(this.getSpecFrom(titleContains, minPrice, maxPrice), pageable)
+                .map(productDTOMapper);
     }
 
     public List<Product> findAll() {
