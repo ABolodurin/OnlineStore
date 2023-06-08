@@ -1,25 +1,30 @@
 package ru.lessonsvtb.lesson14.controllers;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.lessonsvtb.lesson14.entities.ProductDTO;
 import ru.lessonsvtb.lesson14.entities.ProductDetails;
 import ru.lessonsvtb.lesson14.services.ProductDetailsService;
 import ru.lessonsvtb.lesson14.services.ProductService;
+
 import java.util.ArrayList;
 import java.util.List;
 
 @Controller
 @RequestMapping("/products")
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class ProductsController {
-    private ProductService productsService;
-    private ProductDetailsService productDetailsService;
+    private final ProductService productsService;
+    private final ProductDetailsService productDetailsService;
 
     @GetMapping
     public String showProductsList(Model model,

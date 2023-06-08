@@ -1,7 +1,6 @@
 package ru.lessonsvtb.lesson14.configuration;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,10 +14,10 @@ import ru.lessonsvtb.lesson14.services.UserService;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true)
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private UserService userService;
     private static final String ROLE_ADMIN = "ADMIN";
+    private final UserService userService;
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {

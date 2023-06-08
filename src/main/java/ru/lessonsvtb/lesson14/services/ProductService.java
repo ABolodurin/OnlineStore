@@ -1,26 +1,28 @@
 package ru.lessonsvtb.lesson14.services;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.lessonsvtb.lesson14.entities.*;
+import ru.lessonsvtb.lesson14.entities.Product;
+import ru.lessonsvtb.lesson14.entities.ProductDTO;
+import ru.lessonsvtb.lesson14.entities.ProductDTOMapper;
+import ru.lessonsvtb.lesson14.entities.ProductDetails;
+import ru.lessonsvtb.lesson14.entities.ProductMapper;
 import ru.lessonsvtb.lesson14.repositories.ProductRepository;
 import ru.lessonsvtb.lesson14.repositories.specifications.ProductSpecs;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class ProductService {
-    private ProductRepository productRepository;
-    private ProductDetailsService productDetailsService;
-    private ProductDTOMapper productDTOMapper;
-    private ProductMapper productMapper;
+    private final ProductRepository productRepository;
+    private final ProductDetailsService productDetailsService;
+    private final ProductDTOMapper productDTOMapper;
+    private final ProductMapper productMapper;
 
     public ProductDTO getById(Long id) {
         return productRepository.findById(id).map(productDTOMapper).get();
@@ -48,7 +50,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void add(ProductDTO productDTO){
+    public void add(ProductDTO productDTO) {
         Product product = productMapper.apply(productDTO);
         productRepository.save(product);
     }
@@ -63,16 +65,17 @@ public class ProductService {
 
     public List<ProductDTO> getMostViewed() {
         List<ProductDTO> products = new ArrayList<>();
-        productDetailsService.findMostViewed()
+        productDetailsService
+                .findMostViewed()
                 .forEach(productDetails -> products.add(getById(productDetails.getProductId())));
         return products;
     }
 
-    public Product map(ProductDTO productDTO){
+    public Product map(ProductDTO productDTO) {
         return productMapper.apply(productDTO);
     }
 
-    public void updateDetails(){
+    public void updateDetails() {
         findAll().forEach(product -> {
             if (product.getProductDetails() == null) {
                 product.setProductDetails(new ProductDetails(product.getId(), 0L, product));

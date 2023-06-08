@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lessonsvtb.lesson14.entities.ProductDetails;
+
 import java.util.List;
 
 @Repository

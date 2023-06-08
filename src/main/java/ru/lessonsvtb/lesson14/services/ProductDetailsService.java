@@ -1,24 +1,24 @@
 package ru.lessonsvtb.lesson14.services;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lessonsvtb.lesson14.entities.ProductDetails;
 import ru.lessonsvtb.lesson14.repositories.ProductDetailsRepository;
+
 import java.util.List;
 
 @Service
-@AllArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class ProductDetailsService {
-    private ProductDetailsRepository productDetailsRepository;
+    private final ProductDetailsRepository productDetailsRepository;
 
     @Transactional
-    public void add(ProductDetails productDetails){
+    public void add(ProductDetails productDetails) {
         productDetailsRepository.save(productDetails);
     }
 
-    public List<ProductDetails> findMostViewed(){
+    public List<ProductDetails> findMostViewed() {
         return productDetailsRepository.findTop3ByOrderByViewsDesc();
     }
 

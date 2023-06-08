@@ -1,9 +1,10 @@
 package ru.lessonsvtb.lesson14.entities;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+
 import java.util.function.Function;
 
-@Service
+@Component
 public class ProductDTOMapper implements Function<Product, ProductDTO> {
     @Override
     public ProductDTO apply(Product product) {
