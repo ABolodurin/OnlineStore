@@ -1,4 +1,4 @@
-package ru.lessonsvtb.lesson14.logging;
+package ru.lessonsvtb.lesson14.AOPServices;
 
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;

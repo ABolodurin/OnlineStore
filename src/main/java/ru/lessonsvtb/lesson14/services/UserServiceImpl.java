@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findByName(username);
-        if (user == null) throw new UsernameNotFoundException("username not found" + username);
+        if (user == null) throw new UsernameNotFoundException("username not found: " + username);
         return new org.springframework.security.core.userdetails
                 .User(user.getUsername(), user.getPassword(), mapUserAuthorities(user.getAuthorities()));
     }

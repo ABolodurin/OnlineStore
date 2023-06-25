@@ -25,7 +25,10 @@ public class ProductService {
     private final ProductMapper productMapper;
 
     public ProductDTO getById(Long id) {
-        return productRepository.findById(id).map(productDTOMapper).get();
+        return productRepository
+                .findById(id)
+                .map(productDTOMapper)
+                .orElse(new ProductDTO(id, null, 0, new ProductDetails()));
     }
 
     public void deleteProduct(Long id) {
@@ -44,7 +47,8 @@ public class ProductService {
     }
 
     public void updateProduct(Long id, ProductDTO updatedProduct) {
-        Product product = productRepository.findById(id).orElse(new Product());
+        Product product = productRepository.findById(id)
+                .orElse(new Product(id, null, 0, updatedProduct.getProductDetails()));
         product.setPrice(updatedProduct.getPrice());
         product.setTitle(updatedProduct.getTitle());
         productRepository.save(product);
