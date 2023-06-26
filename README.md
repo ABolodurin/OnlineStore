@@ -34,3 +34,5 @@ The user who is authorized as an admin can go to the product page. This page con
 On the main page, a section is available only for the admin user. 
 This section contains a button to fix products added to the database, not through the UI form(details of these products are not initialized). 
 I've decided to keep this issue to try to fix it through HTML-request from the UI(and I got it).
+
+*login|password for testing* user1/admin(```ROLE_ADMIN```) user2/admin(regular user)
