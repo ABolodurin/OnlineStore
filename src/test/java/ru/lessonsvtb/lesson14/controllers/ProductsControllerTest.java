@@ -1,7 +1,6 @@
 package ru.lessonsvtb.lesson14.controllers;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -15,13 +14,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.lessonsvtb.lesson14.entities.Product;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import ru.lessonsvtb.lesson14.entities.ProductDTO;
 import ru.lessonsvtb.lesson14.entities.ProductDetails;
 import ru.lessonsvtb.lesson14.services.ProductDetailsService;
 import ru.lessonsvtb.lesson14.services.ProductService;
 import ru.lessonsvtb.lesson14.services.UserService;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -47,7 +47,6 @@ class ProductsControllerTest {
     private ProductDetailsService productDetailsService;
     @MockBean
     private UserService userService;
-    private List<Product> givenProducts;
     List<ProductDTO> givenProductDTOs;
 
     @BeforeEach
@@ -97,38 +96,33 @@ class ProductsControllerTest {
     }
 
     @Test
-    @Disabled
     void sendProductToServiceAndReturns3xx() throws Exception {
-        ProductDTO expected = new ProductDTO();
         String titleExpected = "someProduct";
         int priceExpected = 1234;
-        expected.setPrice(priceExpected);
-        expected.setTitle(titleExpected);
 
-        mvc.perform(post("/products/add")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                        .content("&title=" + titleExpected + "&price=" + Integer.toString(priceExpected))
-                        .with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(header().string("Location", "/products"));
-        ArgumentCaptor<ProductDetails> productDetailsArgumentCaptor =
-                ArgumentCaptor.forClass(ProductDetails.class);
-        verify(productDetailsService).add(productDetailsArgumentCaptor.capture());
-        ProductDetails actual = productDetailsArgumentCaptor.getValue();
-        String titleActual = productDetailsArgumentCaptor
-                .getValue()
-                .getProduct()
-                .getTitle();
-        int priceActual = productDetailsArgumentCaptor
-                .getValue()
-                .getProduct()
-                .getPrice();
-        assertThat(titleActual).isEqualTo(titleExpected);
-        assertThat(priceActual).isEqualTo(priceExpected);
+        MockHttpServletRequestBuilder requestBuilder = post("/products/add")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .content("title=" + titleExpected + "&price=" + priceExpected)
+                .characterEncoding(StandardCharsets.UTF_8)
+                .with(csrf());
+        mvc.perform(requestBuilder)
+                .andExpect(status()
+                        .is3xxRedirection())
+                .andExpect(header()
+                        .string("Location", "/products"));
+        ArgumentCaptor<ProductDTO> productArgumentCaptor =
+                ArgumentCaptor.forClass(ProductDTO.class);
+        verify(productDetailsService).add
+                (ArgumentMatchers.any());
+        verify(productService).map
+                (productArgumentCaptor.capture());
+        ProductDTO actual = productArgumentCaptor.getValue();
+        assertThat(actual.getTitle()).isEqualTo(titleExpected);
+        assertThat(actual.getPrice()).isEqualTo(priceExpected);
     }
 
     @Test
-    void showOneProduct() throws Exception {
+    void showOneProductAndReturns200() throws Exception {
         ProductDTO productDTO = givenProductDTOs.get(0);
         Long expected = productDTO.getId();
         given(productService.getById(ArgumentMatchers.any())).willReturn(productDTO);
@@ -140,7 +134,7 @@ class ProductsControllerTest {
     }
 
     @Test
-    void deleteProductById() throws Exception {
+    void deleteProductByIdAndReturns3xx() throws Exception {
         Long expected = 3L;
 
         mvc.perform(post("/products/show/" + expected + "/delete")
@@ -151,19 +145,29 @@ class ProductsControllerTest {
     }
 
     @Test
-    void updateProduct() throws Exception {
-        ProductDTO productDTO = givenProductDTOs.get(0);
-        Long expected = productDTO.getId();
+    void updateProductAndReturns3xx() throws Exception {
+        ProductDTO expected = givenProductDTOs.get(0);
 
-        mvc.perform(post("/products/show/" + expected + "/update")
-                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE))
+        mvc.perform(post("/products/show/" + expected.getId() + "/update")
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                        .content("title=" + expected.getTitle() +
+                                "&price=" + expected.getPrice())
+                        .characterEncoding(StandardCharsets.UTF_8)
+                        .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/products"));
-        verify(productService).updateProduct(ArgumentMatchers.any(), ArgumentMatchers.any());
+        ArgumentCaptor<ProductDTO> productDTOArgumentCaptor =
+                ArgumentCaptor.forClass(ProductDTO.class);
+        verify(productService).updateProduct(ArgumentMatchers.any(),
+                productDTOArgumentCaptor.capture());
+        ProductDTO actual = productDTOArgumentCaptor.getValue();
+        assertThat(actual.getId()).isEqualTo(expected.getId());
+        assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
+        assertThat(actual.getPrice()).isEqualTo(expected.getPrice());
     }
 
     @Test
-    void initViews() throws Exception {
+    void initViewsAndReturns3xx() throws Exception {
         mvc.perform(get("/products/init")
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().is3xxRedirection())
