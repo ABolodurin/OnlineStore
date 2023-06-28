@@ -48,7 +48,7 @@ CREATE SCHEMA IF NOT EXISTS boot;
 SET schema_search_path TO boot;
 ```
 
-for test database:
+for real database:
 ```SQL
 CREATE SCHEMA IF NOT EXISTS boot;
 SET search_path TO boot;
