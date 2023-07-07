@@ -1,0 +1,24 @@
+<Configuration>
+    <Properties>
+        <Property name="LOG_PATTERN">[%-5level] %-60C{1.} [%d{MM.dd HH:mm:ss}] - %msg %n</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="RollingFile" filename="logs/log.log"
+        filePattern="logs/log%d{yyyy-MM-dd}.log">
+            <LevelRangeFilter minLevel="FATAL" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50MB"/>
+            </Policies>
+        </RollingFile>
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
