@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
@@ -37,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ProductsController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @ExtendWith(MockitoExtension.class)
+@MockBeans(@MockBean(UserService.class))
 class ProductsControllerTest {
 
     @Autowired
@@ -45,8 +47,6 @@ class ProductsControllerTest {
     private ProductService productService;
     @MockBean
     private ProductDetailsService productDetailsService;
-    @MockBean
-    private UserService userService;
     List<ProductDTO> givenProductDTOs;
 
     @BeforeEach
@@ -73,25 +73,27 @@ class ProductsControllerTest {
                         .param("to", Integer.toString(toExpected))
                         .param("page", Integer.toString(pageExpected)))
                 .andExpect(status().isOk());
-        ArgumentCaptor<String> stringArgumentCaptor =
-                ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<Integer> integerArgumentCaptor =
-                ArgumentCaptor.forClass(Integer.class);
-        ArgumentCaptor<Pageable> pageableArgumentCaptor =
-                ArgumentCaptor.forClass(Pageable.class);
+
+        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
+        ArgumentCaptor<Pageable> pageableArgumentCaptor = ArgumentCaptor.forClass(Pageable.class);
+
         verify(productService).productPage(
                 pageableArgumentCaptor.capture(),
                 stringArgumentCaptor.capture(),
                 integerArgumentCaptor.capture(),
                 integerArgumentCaptor.capture());
+
         int pageActual = pageableArgumentCaptor.getValue().getPageNumber();
         String titleContainsActual = stringArgumentCaptor.getValue();
         int fromActual = integerArgumentCaptor.getAllValues().get(0);
         int toActual = integerArgumentCaptor.getAllValues().get(1);
+
         assertThat(pageActual).isEqualTo(pageExpected);
         assertThat(titleContainsActual).isEqualTo(titleContainsExpected);
         assertThat(fromActual).isEqualTo(fromExpected);
         assertThat(toActual).isEqualTo(toExpected);
+
         verify(productService).getMostViewed();
     }
 
@@ -105,18 +107,18 @@ class ProductsControllerTest {
                 .content("title=" + titleExpected + "&price=" + priceExpected)
                 .characterEncoding(StandardCharsets.UTF_8)
                 .with(csrf());
+
         mvc.perform(requestBuilder)
-                .andExpect(status()
-                        .is3xxRedirection())
-                .andExpect(header()
-                        .string("Location", "/products"));
-        ArgumentCaptor<ProductDTO> productArgumentCaptor =
-                ArgumentCaptor.forClass(ProductDTO.class);
-        verify(productDetailsService).add
-                (ArgumentMatchers.any());
-        verify(productService).map
-                (productArgumentCaptor.capture());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string("Location", "/products"));
+
+        ArgumentCaptor<ProductDTO> productArgumentCaptor = ArgumentCaptor.forClass(ProductDTO.class);
+
+        verify(productDetailsService).add(ArgumentMatchers.any());
+        verify(productService).map(productArgumentCaptor.capture());
+
         ProductDTO actual = productArgumentCaptor.getValue();
+
         assertThat(actual.getTitle()).isEqualTo(titleExpected);
         assertThat(actual.getPrice()).isEqualTo(priceExpected);
     }
@@ -130,6 +132,7 @@ class ProductsControllerTest {
         mvc.perform(get("/products/show/" + expected + "/")
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().isOk());
+
         verify(productService).getById(expected);
     }
 
@@ -141,6 +144,7 @@ class ProductsControllerTest {
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/products"));
+
         verify(productService).deleteProduct(expected);
     }
 
@@ -156,11 +160,14 @@ class ProductsControllerTest {
                         .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/products"));
-        ArgumentCaptor<ProductDTO> productDTOArgumentCaptor =
-                ArgumentCaptor.forClass(ProductDTO.class);
-        verify(productService).updateProduct(ArgumentMatchers.any(),
+        ArgumentCaptor<ProductDTO> productDTOArgumentCaptor = ArgumentCaptor.forClass(ProductDTO.class);
+
+        verify(productService).updateProduct(
+                ArgumentMatchers.any(),
                 productDTOArgumentCaptor.capture());
+
         ProductDTO actual = productDTOArgumentCaptor.getValue();
+
         assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
         assertThat(actual.getPrice()).isEqualTo(expected.getPrice());
@@ -172,6 +179,7 @@ class ProductsControllerTest {
                         .contentType(MediaType.TEXT_HTML))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string("Location", "/products"));
+
         verify(productService).updateDetails();
     }
 

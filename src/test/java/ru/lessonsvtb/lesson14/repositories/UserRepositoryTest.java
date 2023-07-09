@@ -33,7 +33,7 @@ class UserRepositoryTest {
 
         User actual = userRepository.findByUsername(username);
 
-        assertThat(actual).isEqualToComparingFieldByFieldRecursively(expected);
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
 
     }
 

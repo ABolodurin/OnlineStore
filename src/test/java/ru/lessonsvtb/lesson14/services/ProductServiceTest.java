@@ -30,15 +30,13 @@ class ProductServiceTest {
     private ProductRepository productRepository;
     @Mock
     private ProductDetailsService productDetailsService;
-    private ProductMapper productMapper;
     private ProductDTOMapper productDTOMapper;
 
     @BeforeEach
     void setUp() {
-        productMapper = new ProductMapper();
         productDTOMapper = new ProductDTOMapper();
         productService =
-                new ProductService(productRepository, productDetailsService, productDTOMapper, productMapper);
+                new ProductService(productRepository, productDetailsService, productDTOMapper, new ProductMapper());
     }
 
     @Test
@@ -46,10 +44,11 @@ class ProductServiceTest {
         Long expected = 8L;
         productService.getById(expected);
 
-        ArgumentCaptor<Long> longArgumentCaptor =
-                ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(productRepository).findById(longArgumentCaptor.capture());
+
         Long actual = longArgumentCaptor.getValue();
+
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -58,10 +57,11 @@ class ProductServiceTest {
         Long expected = 15L;
         productService.deleteProduct(expected);
 
-        ArgumentCaptor<Long> longArgumentCaptor =
-                ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Long> longArgumentCaptor = ArgumentCaptor.forClass(Long.class);
         verify(productRepository).deleteById(longArgumentCaptor.capture());
+
         Long actual = longArgumentCaptor.getValue();
+
         assertThat(actual).isEqualTo(expected);
     }
 
@@ -76,18 +76,18 @@ class ProductServiceTest {
 
         try {
             productService.productPage(pageableExpected, titleContains, minPrice, maxPrice);
-        } catch (NullPointerException exception) {
-            // repository mock causes an exception
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
-        ArgumentCaptor<Object> specificationArgumentCaptor =
-                ArgumentCaptor.forClass(Object.class);
-        ArgumentCaptor<Pageable> pageableArgumentCaptor =
-                ArgumentCaptor.forClass(Pageable.class);
-        verify(productRepository).findAll((Specification<Product>) specificationArgumentCaptor.capture(),
+        ArgumentCaptor<Object> specificationArgumentCaptor = ArgumentCaptor.forClass(Object.class);
+        ArgumentCaptor<Pageable> pageableArgumentCaptor = ArgumentCaptor.forClass(Pageable.class);
+
+        verify(productRepository).findAll(
+                (Specification<Product>) specificationArgumentCaptor.capture(),
                 pageableArgumentCaptor.capture());
+
         assertThat(pageableArgumentCaptor.getValue()).isEqualTo(pageableExpected);
-        // equals() don't work for Specification class
     }
 
     @Test
@@ -105,12 +105,13 @@ class ProductServiceTest {
 
         ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
         verify(productRepository).save(productArgumentCaptor.capture());
+
         Product actual = productArgumentCaptor.getValue();
+
         assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
         assertThat(actual.getPrice()).isEqualTo(expected.getPrice());
         assertThat(actual.getProductDetails()).isEqualTo(expected.getProductDetails());
-        //this test revealed an unobvious bug
     }
 
     @Test
@@ -120,10 +121,11 @@ class ProductServiceTest {
 
         productService.add(expected);
 
-        ArgumentCaptor<Product> productArgumentCaptor =
-                ArgumentCaptor.forClass(Product.class);
+        ArgumentCaptor<Product> productArgumentCaptor = ArgumentCaptor.forClass(Product.class);
         verify(productRepository).save(productArgumentCaptor.capture());
+
         Product actual = productArgumentCaptor.getValue();
+
         assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getTitle()).isEqualTo(expected.getTitle());
         assertThat(actual.getPrice()).isEqualTo(expected.getPrice());
@@ -139,9 +141,11 @@ class ProductServiceTest {
         List<ProductDTO> actual = productService.getMostViewed();
 
         verify(productDetailsService).findMostViewed();
+
         for (int i = 0; i < given.size(); i++) {
             ProductDetails productDetails = given.get(i);
             ProductDTO productFromDetails = actual.get(i);
+
             assertThat(productFromDetails.getId()).isEqualTo(productDetails.getProductId());
         }
     }
@@ -177,13 +181,14 @@ class ProductServiceTest {
         List<Product> given = List.of(new Product(1L, "someProduct", 151436, null),
                 new Product(2L, "someProduct1", 5325, new ProductDetails()));
         given(productRepository.findAll()).willReturn(given);
+
         productService.updateDetails();
 
         verify(productRepository).findAll();
-        given.forEach(product -> {
-            assertThat(product.getProductDetails()).isNotNull();
-            if (product.getProductDetails() == null) verify(productRepository).save(product);
-        });
+
+        given.forEach(product ->
+
+            assertThat(product.getProductDetails()).isNotNull());
     }
 
 }

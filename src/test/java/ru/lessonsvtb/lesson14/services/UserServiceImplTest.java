@@ -21,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
@@ -40,17 +41,18 @@ class UserServiceImplTest {
 
         userService.findByName(expected);
 
-        ArgumentCaptor<String> stringArgumentCaptor =
-                ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
         verify(userRepository).findByUsername(stringArgumentCaptor.capture());
+
         String actual = stringArgumentCaptor.getValue();
+
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
     void willNotLoadNonExistingUserInSecurityModule() {
         String username = "NonExistingUser";
-        given(userRepository.findByUsername(username)).willReturn(null);
+        when(userRepository.findByUsername(username)).thenReturn(null);
 
         assertThatThrownBy(() -> userService.loadUserByUsername(username))
                 .isInstanceOf(UsernameNotFoundException.class)
@@ -68,6 +70,7 @@ class UserServiceImplTest {
         UserDetails actual = userService.loadUserByUsername(usernameExpected);
 
         verify(userRepository).findByUsername(usernameExpected);
+
         assertThat(actual.getUsername()).isEqualTo(usernameExpected);
         assertThat(actual.getPassword()).isEqualTo(passwordExpected);
         assertThat(actual.getAuthorities()

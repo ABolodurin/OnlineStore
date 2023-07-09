@@ -36,11 +36,12 @@ class ProductDetailsServiceTest {
 
         productDetailsService.add(expected);
 
-        ArgumentCaptor<ProductDetails> productDetailsArgumentCaptor =
-                ArgumentCaptor.forClass(ProductDetails.class);
+        ArgumentCaptor<ProductDetails> productDetailsArgumentCaptor = ArgumentCaptor.forClass(ProductDetails.class);
         verify(productDetailsRepository)
                 .save(productDetailsArgumentCaptor.capture());
+
         ProductDetails actual = productDetailsArgumentCaptor.getValue();
+
         assertThat(actual).isEqualTo(expected);
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest //tests doesn't work without loading full context
+@SpringBootTest
 class ProductDetailsRepositoryTest {
 
     @Autowired
@@ -35,8 +35,8 @@ class ProductDetailsRepositoryTest {
         productDetailsRepository.save(productDetails);
 
         productDetailsRepository.incrementView(id);
-
         ProductDetails actual = productDetailsRepository.findById(id).get();
+
         assertThat(actual.getViews()).isEqualTo(1);
     }
 
@@ -50,14 +50,15 @@ class ProductDetailsRepositoryTest {
         }
 
         List<ProductDetails> actual = productDetailsRepository.findTop3ByOrderByViewsDesc();
-        boolean result = actual.size() == 3;    //top3 check
-        for (int i = 0; i < 2; i++) {
+
+        assertThat(actual.size()).isEqualTo(3);
+
+        for (int i = 0; i < actual.size() - 1; i++) {
             Long thisItemViews = actual.get(i).getViews();
             Long nextItemViews = actual.get(i + 1).getViews();
-            result &= thisItemViews > nextItemViews;
-        }
 
-        assertThat(result).isTrue();
+            assertThat(thisItemViews).isGreaterThan(nextItemViews);
+        }
     }
 
 }
