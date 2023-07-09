@@ -4,19 +4,30 @@
     </Properties>
     <Appenders>
         <RollingFile name="RollingFile" filename="logs/log.log"
-        filePattern="logs/log%d{yyyy-MM-dd}.log">
+                     filePattern="logs/log%d{yyyy-MM-dd}.log">
             <LevelRangeFilter minLevel="FATAL" maxLevel="WARN" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
             <Policies>
                 <SizeBasedTriggeringPolicy size="50MB"/>
             </Policies>
         </RollingFile>
+        <RollingFile name="RollingFileForController" filename="logs/controller.log"
+                     filePattern="logs/controller%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%-5level] [%d{MM.dd HH:mm:ss}] - %msg %n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="50MB"/>
+            </Policies>
+        </RollingFile>
         <Console name="console" target="SYSTEM_OUT">
+            <LevelRangeFilter minLevel="FATAL" maxLevel="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <logger name="ru.lessonsvtb.lesson14.controllers.ProductsController">
+            <appender-ref ref="RollingFileForController"/>
+        </logger>
+        <Root level="DEBUG">
             <AppenderRef ref="console"/>
             <AppenderRef ref="RollingFile"/>
         </Root>
