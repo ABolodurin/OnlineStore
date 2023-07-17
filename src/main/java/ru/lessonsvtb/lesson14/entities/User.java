@@ -35,4 +35,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "authority_id"))
     private List<Authority> authorities;
 
+    @Override
+    public String toString(){
+        return "User " + this.username;
+    }
+
 }

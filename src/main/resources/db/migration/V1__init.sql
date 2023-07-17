@@ -1,3 +1,6 @@
+CREATE SCHEMA IF NOT EXISTS boot;
+SET schema_search_path TO boot;
+
 CREATE TABLE products
 (
     id    serial,

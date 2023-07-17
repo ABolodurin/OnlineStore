@@ -1,7 +1,7 @@
 ALTER TABLE users
     DROP COLUMN enabled;
 
-CREATE TABLE boot.authorities
+CREATE TABLE authorities
 (
     id        serial PRIMARY KEY,
     authority varchar(32)
@@ -15,9 +15,9 @@ CREATE TABLE users_authorities
     CONSTRAINT users_authorities_unq UNIQUE (authority_id, username),
 
     CONSTRAINT users_authorities_fk_users FOREIGN KEY (username)
-        REFERENCES boot.users (username),
+        REFERENCES users (username),
     CONSTRAINT users_authorities_fk_authorities FOREIGN KEY (authority_id)
-        REFERENCES boot.authorities (id)
+        REFERENCES authorities (id)
 );
 
 INSERT INTO authorities (authority)
